@@ -1149,8 +1149,10 @@ body.dimming .dim-veil{opacity:1;pointer-events:all}
 .bp-step-t{font-family:var(--f-display);font-weight:500;font-size:clamp(16px,1.8vw,20px);line-height:1.25;color:var(--ink);margin:0}
 .bp-step-d{font-family:var(--f-body);font-size:clamp(13.5px,1.4vw,15px);line-height:1.55;color:var(--ink-2);margin:6px 0 0;max-width:54ch}
 /* (b) deliverables, 4-across in a solid PRIMARY (oxblood) box — the "what you get" highlight */
-.bp-leave{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+.bp-leave{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
   background:rgba(207,163,92,.22);border:1px solid var(--oxblood)}
+.bp-leave-note{text-align:center;margin:clamp(18px,2.6vh,26px) auto 0;max-width:44ch;font-family:var(--f-mono);
+  font-size:clamp(10.5px,1.1vw,12px);letter-spacing:.14em;text-transform:uppercase;line-height:1.7;color:var(--ink-muted)}
 .bp-leave-item{background:var(--oxblood);padding:clamp(22px,2.6vw,32px) clamp(16px,1.8vw,22px);text-align:center}
 .bp-leave-ic{display:flex;align-items:center;justify-content:center;width:clamp(40px,4.4vw,48px);height:clamp(40px,4.4vw,48px);margin:0 auto clamp(12px,1.8vh,16px);color:#CFA35C}
 .bp-leave-ic svg{width:100%;height:100%;display:block}

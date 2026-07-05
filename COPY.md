@@ -73,14 +73,18 @@ _Full page copy, top to bottom. "Instant Image Upgrade" is the single funnel ter
 
 ---
 
-## 04 · WHAT YOU WALK AWAY WITH
+## 04 · WHAT THE UPGRADE INCLUDES _(derived from The Signature Edit offer structure)_
 
 - **Title:** Your personal _Instant Image Upgrade_
-- **Sub:** A styling plan made only for you, never a template. Once you know what works for your proportions, getting dressed stops being a guess.
-1. **Outfit direction built for your body** — The cuts and shapes that consistently suit your build, not a trend to copy.
-2. **A wardrobe plan you can actually use** — What to keep, what to add, and what to let go.
-3. **Clarity on what to buy, and what to stop buying** — No more expensive pieces sitting unworn in your cupboard.
-4. **A clear next step, instead of guessing before every event** — Get dressed with confidence, instead of doubting yourself every morning.
+- **Sub:** A complete image transformation, built only for you. Your colours, your wardrobe, your shopping and the plan to hold it all together, done with Sanobar.
+1. **Style Discovery** — A full read of your proportions, colouring and how you want to be seen.
+2. **Korean Colour Analysis** — Your exact palette, so every colour finally works for your skin, not against it.
+3. **Wardrobe Audit** — What to keep, what to let go, and the gaps worth filling.
+4. **Grooming Direction** — The finishing details most people miss, that quietly change how put-together you look.
+5. **Personal Shopping** — The right pieces sourced for you, so you stop buying wrong.
+6. **Lookbook & Reports** — Everything documented, so you dress right long after the call.
+
+_Footer note:_ Plus Sanobar on WhatsApp throughout, for the moments you are unsure.
 
 ---
 

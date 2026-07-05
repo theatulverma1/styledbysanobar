@@ -79,16 +79,20 @@ const AGENDA_ICONS: React.ReactNode[] = [
 
 /* §5 what you walk away with: the Instant Image Upgrade deliverables. */
 const LEAVE: { title: string; desc: string }[] = [
-  { title: "Outfit direction built for your body", desc: "The cuts and shapes that consistently suit your build, not a trend to copy." },
-  { title: "A wardrobe plan you can actually use", desc: "What to keep, what to add, and what to let go." },
-  { title: "Clarity on what to buy, and what to stop buying", desc: "No more expensive pieces sitting unworn in your cupboard." },
-  { title: "A clear next step, instead of guessing before every event", desc: "Get dressed with confidence, instead of doubting yourself every morning." },
+  { title: "Style Discovery", desc: "A full read of your proportions, colouring and how you want to be seen." },
+  { title: "Korean Colour Analysis", desc: "Your exact palette, so every colour finally works for your skin, not against it." },
+  { title: "Wardrobe Audit", desc: "What to keep, what to let go, and the gaps worth filling." },
+  { title: "Grooming Direction", desc: "The finishing details most people miss, that quietly change how put-together you look." },
+  { title: "Personal Shopping", desc: "The right pieces sourced for you, so you stop buying wrong." },
+  { title: "Lookbook & Reports", desc: "Everything documented, so you dress right long after the call." },
 ];
 const LEAVE_ICONS: React.ReactNode[] = [
-  I(<><path d="M12 3.4a1.7 1.7 0 1 1 0 3.4 1.7 1.7 0 0 1 0-3.4Z" /><path d="M9.5 8.4h5l-1.3 4.2 1.6 7.6h-5.6l1.6-7.6z" /></>),
-  I(<><path d="M5 8h14l-1 12H6L5 8z" /><path d="M9 8V6.5a3 3 0 0 1 6 0V8" /></>),
-  I(<><path d="M4 4h7l9 9-7 7-9-9z" /><circle cx="8.2" cy="8.2" r="1.1" /></>),
-  I(<><path d="M12 6.5c-1.6-1.3-3.6-2-6-2v13c2.4 0 4.4.7 6 2M12 6.5c1.6-1.3 3.6-2 6-2v13c-2.4 0-4.4.7-6 2M12 6.5v13" /></>),
+  I(<><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="2.6" /></>),
+  I(<><path d="M12 3.2a8.8 8.8 0 1 0 0 17.6c1.3 0 1.8-.9 1.8-1.8 0-1.4.9-1.9 1.9-1.9h.9a2.8 2.8 0 0 0 2.8-2.8c0-4.8-3.6-8.5-9.4-8.5Z" /><circle cx="7.6" cy="11" r="1" /><circle cx="12" cy="8" r="1" /><circle cx="16.3" cy="11" r="1" /></>),
+  I(<><path d="M12 7.2a1.5 1.5 0 1 1 1.2 2.4c-.7.1-1.2.6-1.2 1.2" /><path d="M12 10.8 4.5 16.5h15z" /></>),
+  I(<><circle cx="6" cy="7" r="2.1" /><circle cx="6" cy="17" r="2.1" /><path d="M7.7 8.3 20 17M7.7 15.7 20 7" /></>),
+  I(<><path d="M6 8h12l-1 11H7L6 8z" /><path d="M9 8V6.4a3 3 0 0 1 6 0V8" /></>),
+  I(<><rect x="5" y="3.5" width="14" height="17" rx="1" /><path d="M8.5 8h7M8.5 12h7M8.5 16h4" /></>),
 ];
 
 /* §6 testimonials: consented client clips (assets pending — honest placeholders). */
@@ -340,9 +344,9 @@ export default function Page() {
         <div className="r-inner r-inner--wide">
           <header className="r-head">
             <span className="r-index" aria-hidden="true">04</span>
-            <span className="sec-eyebrow">What you walk away with</span>
+            <span className="sec-eyebrow">What the upgrade includes</span>
             <h2 className="r-h2">Your personal <em>Instant Image Upgrade</em></h2>
-            <p className="r-sub">A styling plan made only for you, never a template. Once you know what works for your proportions, getting dressed stops being a guess.</p>
+            <p className="r-sub">A complete image transformation, built only for you. Your colours, your wardrobe, your shopping and the plan to hold it all together, done with Sanobar.</p>
           </header>
           <ul className="bp-leave">
             {LEAVE.map((d, i) => (
@@ -353,6 +357,7 @@ export default function Page() {
               </li>
             ))}
           </ul>
+          <p className="bp-leave-note">Plus Sanobar on WhatsApp throughout, for the moments you are unsure.</p>
         </div>
       </section>
 

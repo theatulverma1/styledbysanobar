@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "The Presence Consultation · Sanobar Samir",
+  title: "The Instant Image Upgrade · Sanobar Samir",
   description:
-    "You earned your success. People still cannot see it on you. A private, one-to-one Presence Consultation with celebrity stylist Sanobar Samir, so how people see you finally matches what you have built.",
+    "You earned your success. People still cannot see it on you. A private, one-to-one Instant Image Upgrade with celebrity stylist Sanobar Samir, so how people see you finally matches what you have built.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -29,7 +30,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link rel="stylesheet" href="/styles.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Microsoft Clarity — session analytics/heatmaps */}
+        <Script id="ms-clarity" strategy="afterInteractive">
+          {`(function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "xhpz90q436");`}
+        </Script>
+      </body>
     </html>
   );
 }
