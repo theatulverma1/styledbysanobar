@@ -5,7 +5,7 @@ import { useEffect } from "react";
 /* High-ticket single-page funnel: reveal-on-scroll (fail-open) + a sticky book
    bar that appears once the hero is scrolled past and hides again at the finale
    so it never doubles a visible CTA. Pure progressive enhancement: with JS off,
-   all the content is visible and the sticky bar simply never shows. */
+   all content is visible and the sticky bar simply never shows. */
 export default function FunnelScripts() {
   useEffect(() => {
     const root = document.documentElement;
