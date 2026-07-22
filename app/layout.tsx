@@ -14,6 +14,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Meta (Facebook) domain verification. Required for Aggregated Event
+            Measurement, which is how conversions from iOS users get attributed.
+            Public by design, it is meant to be readable in page source. Meta
+            re-checks it periodically, so this tag has to STAY here. */}
+        <meta
+          name="facebook-domain-verification"
+          content="qlvthhc5jb3su9aoeex7dssmhdgxef"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         {/*
