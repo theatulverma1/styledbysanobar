@@ -147,11 +147,14 @@ export async function POST(req: Request) {
     return Response.json({ ok: true, skipped: "no uid" });
   }
 
-  /* Cal sends the full name in one field. Meta wants first and last hashed
-     separately, so split on the first space and hash whatever we got. */
-  const fullName: string = attendee?.name ?? "";
-  const [firstName, ...restName] = fullName.trim().split(/\s+/);
-  const lastName = restName.join(" ");
+  /* Cal gives firstName/lastName on the attendee directly (confirmed against a
+     real BOOKING_CREATED payload), so prefer those. Splitting the display name
+     on whitespace is only a fallback: it mangles "Priya Raj Sharma" and every
+     single-word name, and a wrong hash is worse than no hash because it cannot
+     match anything. */
+  const splitName = (attendee?.name ?? "").trim().split(/\s+/);
+  const firstName: string = attendee?.firstName || splitName[0] || "";
+  const lastName: string = attendee?.lastName || splitName.slice(1).join(" ");
 
   const phone: string | undefined =
     attendee?.phoneNumber ??

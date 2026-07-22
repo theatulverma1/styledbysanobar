@@ -17,6 +17,54 @@ function ready(): Fbq | null {
   return typeof window.fbq === "function" ? window.fbq : null;
 }
 
+/* The pixel loads with strategy="afterInteractive", and React effects also run
+   after hydration, so the two race. An event fired from a mount effect can
+   arrive before window.fbq exists and would otherwise vanish with no error.
+
+   So: hold anything fired too early and flush it the moment the pixel appears.
+   Give up after WAIT_MS, which is the genuinely blocked case (ad blocker), and
+   drop the queue rather than leak a timer forever. */
+const WAIT_MS = 10_000;
+const POLL_MS = 200;
+let queued: Array<() => void> = [];
+let waiting = false;
+
+function flushWhenReady() {
+  if (waiting) return;
+  waiting = true;
+  const started = Date.now();
+  const tick = () => {
+    if (ready()) {
+      const run = queued;
+      queued = [];
+      waiting = false;
+      run.forEach((fire) => fire());
+      return;
+    }
+    if (Date.now() - started > WAIT_MS) {
+      queued = [];
+      waiting = false;
+      return;
+    }
+    window.setTimeout(tick, POLL_MS);
+  };
+  tick();
+}
+
+function send(fire: (fbq: Fbq) => void) {
+  const fbq = ready();
+  if (fbq) {
+    fire(fbq);
+    return;
+  }
+  if (typeof window === "undefined") return; // server render, nothing to queue
+  queued.push(() => {
+    const late = ready();
+    if (late) fire(late);
+  });
+  flushWhenReady();
+}
+
 /** Fire one of Meta's standard events (PageView, ViewContent, Lead, ...).
  *  Pass eventID when the same event is ALSO sent from the Conversions API, so
  *  Meta collapses the pair instead of counting the conversion twice. */
@@ -25,17 +73,15 @@ export function track(
   params?: Record<string, unknown>,
   eventID?: string
 ) {
-  const fbq = ready();
-  if (!fbq) return;
-  if (eventID) fbq("track", event, params, { eventID });
-  else fbq("track", event, params);
+  send((fbq) => {
+    if (eventID) fbq("track", event, params, { eventID });
+    else fbq("track", event, params);
+  });
 }
 
 /** Fire a custom (non-standard) event. */
 export function trackCustom(event: string, params?: Record<string, unknown>) {
-  const fbq = ready();
-  if (!fbq) return;
-  fbq("trackCustom", event, params);
+  send((fbq) => fbq("trackCustom", event, params));
 }
 
 /* The one offer this funnel sells, so every event carries the same labels and
