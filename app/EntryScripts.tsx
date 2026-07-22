@@ -36,7 +36,7 @@ export default function EntryScripts() {
     // the fitting-room dim, then route into the quiz
     const onCta = (e: Event) => {
       const link = (e.currentTarget as HTMLAnchorElement);
-      const href = link.getAttribute("href") || "/quiz";
+      const href = link.getAttribute("href") || "/book";
       if (reduce) return; // let the plain navigation happen
       e.preventDefault();
       document.body.classList.add("dimming");

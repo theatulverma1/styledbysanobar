@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import MetaPixel from "./MetaPixel";
 
 export const metadata: Metadata = {
   title: "The Instant Image Upgrade · Sanobar Samir",
@@ -32,6 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
+        {/* Meta Pixel — base code + PageView on every page */}
+        <MetaPixel />
         {/* Microsoft Clarity — session analytics/heatmaps */}
         <Script id="ms-clarity" strategy="afterInteractive">
           {`(function(c,l,a,r,i,t,y){

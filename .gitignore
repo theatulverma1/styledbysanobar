@@ -3,4 +3,7 @@ node_modules
 out
 .DS_Store
 *.log
+# Secrets. ALL env files stay local, including .env.example, because it holds a
+# real CAPI access token. Real values live in Vercel -> Environment Variables.
 .env*
+mockups

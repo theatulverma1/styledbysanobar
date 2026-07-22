@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { OFFER, leadEventId, track } from "../lib/fbq";
 
 /* Cal.com inline embed for Sanobar's 30-minute Instant Image Upgrade consultation.
    calLink: sanobar-samir-fiqx39/30min. Runs client-side only; the brand FRAMES the
    embed (cream inset + loading placeholder), it does not restyle Cal's own UI (C12). */
 export default function CalEmbed() {
   const [ready, setReady] = useState(false);
+  const viewed = useRef(false);
+  const booked = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     /* eslint-disable */
@@ -39,6 +42,39 @@ export default function CalEmbed() {
     Cal.ns["30min"]("ui", { hideEventTypeDetails: false, layout: "month_view" });
     /* best-effort: lift the placeholder once Cal has had a moment to render */
     Cal.ns["30min"]("on", { action: "linkReady", callback: () => setReady(true) });
+
+    /* Meta Pixel — mid-funnel: they reached the calendar. /book is only ever
+       reached from a CTA, so this is the reliable "clicked apply" number.
+       Ref-guarded so React's double-invoked effect in dev cannot double-count. */
+    if (!viewed.current) {
+      viewed.current = true;
+      track("ViewContent", OFFER);
+    }
+
+    /* Meta Pixel — the conversion: the consultation is actually booked. This is
+       the event to optimise the campaign on.
+
+       The SAME Lead is also sent server-side by the Cal.com webhook at
+       /api/webhooks/cal. Both carry event_id cal_lead_<booking uid>, so Meta
+       collapses the pair into one conversion. If the uid is missing from the
+       callback we still fire, but unmatched: an over-count is recoverable,
+       a silently missing conversion is not.
+
+       bookingSuccessfulV2 is the current event; it deprecates the older
+       bookingSuccessful. We subscribe to BOTH and drop the second one by uid,
+       so this keeps working whichever Cal actually emits. */
+    const fireLead = (e: any) => {
+      const d = e?.detail?.data ?? {};
+      const uid: string | undefined = d?.uid ?? d?.booking?.uid;
+      if (uid) {
+        if (booked.current.has(uid)) return; // already sent for this booking
+        booked.current.add(uid);
+      }
+      track("Lead", OFFER, uid ? leadEventId(uid) : undefined);
+    };
+    Cal.ns["30min"]("on", { action: "bookingSuccessfulV2", callback: fireLead });
+    Cal.ns["30min"]("on", { action: "bookingSuccessful", callback: fireLead });
+
     const t = setTimeout(() => setReady(true), 2500);
     return () => clearTimeout(t);
   }, []);

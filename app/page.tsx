@@ -12,7 +12,7 @@ const BOOK_HREF = "/book"; // the Cal.com booking page (app/book)
 
 /* ---- inline line-icon helper ---- */
 const I = (paths: React.ReactNode) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     {paths}
   </svg>
 );
@@ -64,16 +64,18 @@ const CRED_LOGOS: { name: string; src: string; scale?: number }[] = [
 ];
 
 /* §4 call structure: what actually happens on the consultation, as an agenda. */
-const AGENDA: { title: string; desc: string }[] = [
-  { title: "She reads where you are today", desc: "Your work, the rooms you walk into, and how you want to be seen at the occasions that matter." },
-  { title: "She reads your proportions and colouring", desc: "Your body shape and the shades that genuinely suit you, the way she reads it for the camera." },
-  { title: "She names what is holding your image back", desc: "The one or two quiet things working against how you look, that no one ever pointed out." },
-  { title: "She tells you honestly if it is a fit", desc: "This is not a pitch. If Sanobar is not right for what you need, she will say so plainly." },
+const AGENDA: { tag: string; title: string; desc: string }[] = [
+  { tag: "Discovery", title: "Your world, and the rooms you walk into", desc: "We'll talk through your work, your days, and the moments where how you are seen matters most." },
+  { tag: "Goal mapping", title: "How you want to be seen", desc: "We'll map where you want to land: the occasions, the rooms, the impression you want to make." },
+  { tag: "Diagnosis", title: "Why your image hasn't caught up to your success", desc: "You'll learn why the usual fixes, pricier clothes or chasing trends, don't close the gap." },
+  { tag: "Framework", title: "How the Instant Image Upgrade works", desc: "We'll walk you through the approach, and what the process looks like once you begin." },
+  { tag: "Fit check", title: "Whether it is right for you", desc: "This is not a pitch. If Sanobar is not right for what you need, she will say so plainly." },
 ];
 const AGENDA_ICONS: React.ReactNode[] = [
   I(<><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>),
-  I(<><rect x="3" y="8" width="18" height="8" rx="1.4" /><path d="M7 8v3M10.5 8v4M14 8v3M17.5 8v4" /></>),
+  I(<><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.4" /><circle cx="12" cy="12" r="1" fill="currentColor" /></>),
   I(<><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="2.8" /></>),
+  I(<><rect x="4" y="4" width="7" height="7" rx="1" /><rect x="13" y="4" width="7" height="7" rx="1" /><rect x="4" y="13" width="7" height="7" rx="1" /><rect x="13" y="13" width="7" height="7" rx="1" /></>),
   I(<><circle cx="12" cy="12" r="9" /><path d="M8 12.4l2.6 2.6L16 9.5" /></>),
 ];
 
@@ -135,10 +137,10 @@ const FAQ: { q: string; a: React.ReactNode; most?: boolean }[] = [
 
 /* hero offer-card items: circular icon badge + one line each. */
 const HERO_CARD: { icon: React.ReactNode; text: string }[] = [
-  { icon: I(<><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>), text: "One to one with Sanobar herself, live" },
-  { icon: I(<><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="2.6" /></>), text: "She reads your image on sight, the way she reads it for the camera" },
-  { icon: I(<><path d="M4 4h7l9 9-7 7-9-9z" /><circle cx="8.2" cy="8.2" r="1.1" /></>), text: "She names exactly what is holding it back" },
-  { icon: I(<><rect x="5" y="3.5" width="14" height="17" rx="1" /><path d="M8.5 8h7M8.5 12h7M8.5 16h4" /></>), text: "You leave with your Instant Image Upgrade plan, built only for you" },
+  { icon: I(<><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>), text: "A private, one-to-one consultation with Sanobar herself." },
+  { icon: I(<><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="2.6" /></>), text: "An honest read on what is holding your image back." },
+  { icon: I(<><path d="M4 4h7l9 9-7 7-9-9z" /><circle cx="8.2" cy="8.2" r="1.1" /></>), text: "The gap between the success you have built and how you are actually seen." },
+  { icon: I(<><rect x="5" y="3.5" width="14" height="17" rx="1" /><path d="M8.5 8h7M8.5 12h7M8.5 16h4" /></>), text: "Your customised Instant Image Upgrade, built only for you to close that gap." },
 ];
 
 export default function Page() {
@@ -266,51 +268,69 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ============ [3] HIGHLIGHT PROBLEM — the A to B gap ============ */}
+      {/* ============ [3] THE REAL PROBLEM: built-success vs image-lag gap ============ */}
       <section className="r-band hi-problem" id="problem" aria-label="The real problem">
         <div className="r-inner">
+
+          {/* eyebrow (gold hairline under it) + title + sub */}
           <header className="r-head reveal">
-            <span className="r-index" aria-hidden="true">02</span>
-            <span className="sec-eyebrow">The real problem</span>
-            <h2 className="r-h2">You built the success. Your image never caught up.</h2>
-            <p className="r-sub">The work is never in question. You are.</p>
+            <span className="sec-eyebrow pr-eyebrow">The real problem</span>
+            <h2 className="r-h2">You built the success. Your <em>image</em> never caught up.</h2>
+            <p className="r-sub">People don&rsquo;t question your ability. They question <em className="pr-gold">your level</em>.</p>
           </header>
 
-          {/* the gap — funnel's standard before/after panels (today light, should-be dark) */}
-          <div className="r-panels reveal">
+          {/* before / after: how you're read today vs how you should be read */}
+          <div className="r-panels pr-panels reveal">
             <div className="r-panel">
-              <span className="r-panel-eyebrow">How people see you today</span>
+              <span className="pr-plabel">How you&rsquo;re read today</span>
               <ul className="pr-words">
                 <li>Capable</li>
                 <li>Experienced</li>
                 <li>Trustworthy</li>
-                <li className="pr-words-punch">Easy to underestimate</li>
+                <li>Hardworking</li>
               </ul>
+              <span className="pr-pdiv" aria-hidden="true" />
+              <span className="pr-tag">The person who still has to prove it.</span>
             </div>
-            <div className="r-gap" aria-hidden="true"><span className="r-gap-label">the gap</span></div>
             <div className="r-panel r-panel--dark">
-              <span className="r-panel-eyebrow">How they should see you</span>
+              <span className="pr-plabel">How you should be read</span>
               <ul className="pr-words">
                 <li>Senior</li>
-                <li>Decisive</li>
                 <li>Influential</li>
-                <li className="pr-words-punch">The person people notice first</li>
+                <li>Decisive</li>
+                <li>Respected</li>
               </ul>
+              <span className="pr-pdiv" aria-hidden="true" />
+              <span className="pr-tag">The person everyone expects to lead.</span>
             </div>
           </div>
 
-          {/* the question every room asks */}
-          <div className="pr-ask reveal">
-            <span className="pr-ask-lead">Every room asks one question before you speak</span>
-            <h3 className="r-h2 pr-ask-q">&ldquo;How important is this person?&rdquo;</h3>
-            <span className="pr-ask-foot">Your image answers first.</span>
+          {/* pull quote: flanked by gold marks, hairline rules running out left & right */}
+          <div className="pr-quote reveal">
+            <div className="pr-quote-row">
+              <span className="pr-quote-rule" aria-hidden="true" />
+              <blockquote className="pr-quote-core">
+                <span className="pr-quote-mark pr-quote-mark--open" aria-hidden="true">&ldquo;</span>
+                <p className="pr-quote-q">Before you speak, the room already made a decision.</p>
+                <span className="pr-quote-mark pr-quote-mark--close" aria-hidden="true">&rdquo;</span>
+              </blockquote>
+              <span className="pr-quote-rule" aria-hidden="true" />
+            </div>
+            <p className="pr-quote-sub">Your image answered <em className="pr-gold">first</em>.</p>
           </div>
 
-          {/* the close + bridge to the consultation */}
-          <div className="pr-final reveal">
-            <h3 className="r-h2">Nothing you wear is wrong. It was simply never built for you.</h3>
-            <span className="pr-bridge">That is exactly what Sanobar reads in your first consultation.</span>
+          {/* bottom reframe bar: cream, hairline, solid gold left accent, vertical divider */}
+          <div className="pr-bar reveal">
+            <div className="pr-bar-col">
+              <p className="pr-bar-lead">The problem was never your wardrobe.</p>
+              <p className="pr-bar-turn"><em className="pr-gold">It was never built around you.</em></p>
+            </div>
+            <div className="pr-bar-col">
+              <p className="pr-bar-muted">Most styling advice is made for generic body types, generic lifestyles, and generic people.</p>
+              <p className="pr-bar-strong">This one is built around <em className="pr-gold">yours</em>.</p>
+            </div>
           </div>
+
         </div>
       </section>
 
@@ -320,17 +340,16 @@ export default function Page() {
           <header className="r-head">
             <span className="r-index" aria-hidden="true">03</span>
             <span className="sec-eyebrow">What the consultation is</span>
-            <h2 className="r-h2">A private read of your image. <em>Not a sales call.</em></h2>
-            <p className="r-sub">One to one with Sanobar herself. Come exactly as you are; there is nothing to prepare.</p>
+            <h2 className="r-h2">Here&rsquo;s What We&rsquo;ll Discuss During Your <em>Instant Image Upgrade</em> Call.</h2>
+            <p className="r-sub">One to one with Sanobar herself, 30 minutes, just the two of you. Come exactly as you are; there is nothing to prepare.</p>
           </header>
-          <span className="call-meta-chip">One to one · With Sanobar herself · 30 minutes</span>
           <div className="bp-steps-box">
             <ol className="bp-steps">
               {AGENDA.map((s, i) => (
                 <li className="bp-step" key={i}>
                   <span className="bp-step-ic" aria-hidden="true">{AGENDA_ICONS[i]}</span>
                   <div className="bp-step-body">
-                    <span className="bp-step-n">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="bp-step-n">{String(i + 1).padStart(2, "0")}<span className="bp-step-tag">{s.tag}</span></span>
                     <h3 className="bp-step-t">{s.title}</h3>
                     <p className="bp-step-d">{s.desc}</p>
                   </div>
@@ -441,9 +460,20 @@ export default function Page() {
             reasons. One conversation, and a plan built only for you.
           </p>
           <a className="cta-btn" href={BOOK_HREF}>Apply for your Instant Image Upgrade <span className="arrow">&rarr;</span></a>
-          <span className="r-finale-micro">
-            Led personally by Sanobar · by private application · only 8 consultations each week
-          </span>
+          <ul className="hi-cta-points r-finale-points">
+            <li className="hi-cta-point">
+              <span className="hi-cta-point-ic" aria-hidden="true">{I(<><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>)}</span>
+              <span className="hi-cta-point-txt">Led personally by Sanobar</span>
+            </li>
+            <li className="hi-cta-point">
+              <span className="hi-cta-point-ic" aria-hidden="true">{I(<><rect x="5" y="11" width="14" height="9" rx="1.4" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></>)}</span>
+              <span className="hi-cta-point-txt">By private application</span>
+            </li>
+            <li className="hi-cta-point">
+              <span className="hi-cta-point-ic" aria-hidden="true">{I(<><rect x="3" y="4.5" width="18" height="16" rx="1.4" /><path d="M3 9h18M8 3v3M16 3v3" /></>)}</span>
+              <span className="hi-cta-point-txt">Only 8 consultations a week</span>
+            </li>
+          </ul>
           <div className="r-colophon">Your image should be as thought through as everything else you have built.<br />The Instant Image Upgrade, by Sanobar Samir.</div>
         </div>
       </section>
