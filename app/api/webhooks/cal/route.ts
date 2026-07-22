@@ -31,6 +31,71 @@ const OFFER = {
   content_category: "booking",
 };
 
+/* Application-form answers. Cal keys payload.responses by the question text,
+   slugified, so these strings must match the questions in Cal EXACTLY. If a
+   question is reworded in Cal, its key changes and the answer silently stops
+   coming through. That is the one maintenance trap here.
+
+   Free-text questions ("Why are you applying", "biggest image challenge") are
+   deliberately NOT sent. Applicants write personal things in those boxes, and
+   Meta's terms forbid sending sensitive personal data. Only fixed-choice
+   answers go out. */
+const Q = {
+  budget:
+    "How-much-are-you-prepared-to-invest-in-improving-your-image-if-Sanobar-believes-you-re-the-right-fit",
+  profession: "What-best-describes-your-profession",
+  priorStylist:
+    "Have-you-worked-with-a-personal-stylist-or-image-consultant-before",
+};
+
+/* Cal returns an answer as a bare string, a number, an array (multi-select), or
+   a { label, value } object depending on the field type. Flatten all of them. */
+function answer(responses: any, key: string): string | undefined {
+  const raw = responses?.[key];
+  if (raw == null) return undefined;
+  const v = typeof raw === "object" && !Array.isArray(raw) ? raw.value ?? raw.label : raw;
+  if (Array.isArray(v)) return v.filter(Boolean).join(", ") || undefined;
+  if (typeof v === "string") return v.trim() || undefined;
+  if (typeof v === "number") return String(v);
+  return undefined;
+}
+
+/* Budget band -> the number Meta gets as `value`, in INR.
+
+   The bands are "at least X", so the label already IS the lower bound and the
+   mapping is exact, not an estimate.
+
+   Keys are NORMALISED (lowercased, everything non-alphanumeric stripped) rather
+   than matched byte for byte, so "atleast 50000", "At least ₹50,000" and
+   "at-least 50,000" all resolve to the same band. Cal labels get reworded and
+   re-spaced over time; an exact-string map would silently stop matching and we
+   would never notice. */
+const BUDGET_VALUE: Record<string, number> = {
+  atleast50000: 50_000,
+  atleast100000: 100_000,
+  atleast200000: 200_000,
+  atleast500000: 500_000,
+};
+
+function budgetKey(raw: string): string {
+  return raw.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function budgetToValue(raw?: string): number | undefined {
+  if (!raw) return undefined;
+
+  const mapped = BUDGET_VALUE[budgetKey(raw)];
+  if (typeof mapped === "number") return mapped;
+
+  /* Fallback for a band added in Cal but not here: read the first number out of
+     the label, tolerating comma grouping. Keeps a new option reporting a sane
+     value instead of nothing until the map catches up. */
+  const match = raw.replace(/[,\s]/g, "").match(/\d+/);
+  if (!match) return undefined;
+  const n = Number(match[0]);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
 /** Meta requires every PII field lowercased, trimmed, then SHA-256 hex. */
 function hash(value: string | undefined | null): string | undefined {
   if (!value) return undefined;
@@ -148,6 +213,29 @@ export async function POST(req: Request) {
     if (userData[key] === undefined) delete userData[key];
   }
 
+  /* Qualifying answers. Sent so you can see WHICH ads bring serious applicants,
+     and so Meta has value history if volume ever justifies value optimisation.
+     Do NOT switch campaigns to value optimisation on this: at 8 consultations a
+     week there is nowhere near enough signal, and this is stated intent on a
+     form, not revenue collected. */
+  const budgetAnswer = answer(payload?.responses, Q.budget);
+  const value = budgetToValue(budgetAnswer);
+
+  const customData: Record<string, unknown> = {
+    ...OFFER,
+    booking_uid: uid,
+    budget_band: budgetAnswer,
+    profession: answer(payload?.responses, Q.profession),
+    prior_stylist: answer(payload?.responses, Q.priorStylist),
+  };
+  if (value !== undefined) {
+    customData.value = value;
+    customData.currency = "INR";
+  }
+  for (const key of Object.keys(customData)) {
+    if (customData[key] === undefined) delete customData[key];
+  }
+
   const event = {
     event_name: "Lead",
     /* Seconds, and Meta rejects anything older than 7 days. Cal puts an ISO
@@ -160,10 +248,7 @@ export async function POST(req: Request) {
       ? `${process.env.NEXT_PUBLIC_SITE_URL}/book`
       : undefined,
     user_data: userData,
-    custom_data: {
-      ...OFFER,
-      booking_uid: uid,
-    },
+    custom_data: customData,
   };
 
   const capiBody: Record<string, unknown> = { data: [event] };
@@ -190,7 +275,15 @@ export async function POST(req: Request) {
       return Response.json({ ok: false, capi: result }, { status: 200 });
     }
 
-    console.log("[cal-webhook] Lead sent", uid, JSON.stringify(result));
+    /* Logs the resolved value so a band that failed to map is obvious: a
+       budget_band with no value next to it means BUDGET_VALUE needs that label
+       (or the parser could not find a number in it). */
+    console.log(
+      "[cal-webhook] Lead sent",
+      uid,
+      JSON.stringify({ value: value ?? null, budget_band: budgetAnswer ?? null }),
+      JSON.stringify(result)
+    );
     return Response.json({ ok: true, event_id: event.event_id });
   } catch (err) {
     console.error("[cal-webhook] CAPI request failed", err);
