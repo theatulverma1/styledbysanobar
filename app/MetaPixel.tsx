@@ -28,7 +28,17 @@ t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '${pixelId}');
-fbq('track', 'PageView');`}
+fbq('track', 'PageView');
+/* Mid-funnel event. Fired HERE, in the same script as init, so it cannot lose a
+   race against fbq loading. It used to fire from CalEmbed's mount effect, which
+   races the pixel script and loses silently. /book is only reachable from a CTA,
+   so this is the reliable "clicked apply" number. */
+if (window.location.pathname.replace(/\\/+$/, '') === '/book') {
+  fbq('track', 'ViewContent', {
+    content_name: 'Instant Image Upgrade consultation',
+    content_category: 'booking'
+  });
+}`}
       </Script>
       <noscript>
         <img
