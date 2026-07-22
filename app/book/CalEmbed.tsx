@@ -8,7 +8,6 @@ import { OFFER, leadEventId, track } from "../lib/fbq";
    embed (cream inset + loading placeholder), it does not restyle Cal's own UI (C12). */
 export default function CalEmbed() {
   const [ready, setReady] = useState(false);
-  const viewed = useRef(false);
   const booked = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -46,13 +45,9 @@ export default function CalEmbed() {
     /* best-effort: lift the placeholder once Cal has had a moment to render */
     Cal.ns["30min"]("on", { action: "linkReady", callback: () => setReady(true) });
 
-    /* Meta Pixel — mid-funnel: they reached the calendar. /book is only ever
-       reached from a CTA, so this is the reliable "clicked apply" number.
-       Ref-guarded so React's double-invoked effect in dev cannot double-count. */
-    if (!viewed.current) {
-      viewed.current = true;
-      track("ViewContent", OFFER);
-    }
+    /* ViewContent is NOT fired here. It lives in MetaPixel.tsx alongside
+       fbq('init'), because firing it from this effect races the pixel script
+       and loses silently. See the comment there. */
 
     /* Meta Pixel — the conversion: the consultation is actually booked. This is
        the event to optimise the campaign on.
